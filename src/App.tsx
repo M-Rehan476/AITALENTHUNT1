@@ -22,11 +22,13 @@ import PostJob from './pages/recruiter/PostJob';
 // Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import PendingApprovals from './pages/admin/PendingApprovals';
+import SubadminManagement from './pages/admin/SubadminManagement';
 import RecruiterManagement from './pages/admin/RecruiterManagement';
 import AllJobs from './pages/admin/AllJobs';
 import AllCandidates from './pages/admin/AllCandidates';
 import AdminPipeline from './pages/admin/AdminPipeline';
 import RecruiterProfile from './pages/admin/RecruiterProfile';
+import MyProfile from './pages/shared/MyProfile';
 
 function App() {
   return (
@@ -48,17 +50,20 @@ function App() {
             <Route path="my-candidates" element={<MyCandidates />} />
             <Route path="pipeline" element={<RecruiterPipeline />} />
             <Route path="post-job" element={<PostJob />} />
+            <Route path="profile" element={<MyProfile />} />
           </Route>
 
           {/* Admin portal */}
           <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout /></ProtectedRoute>}>
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="approvals" element={<PendingApprovals />} />
+            <Route path="subadmins" element={<SubadminManagement />} />
             <Route path="recruiters" element={<RecruiterManagement />} />
             <Route path="recruiters/:id" element={<RecruiterProfile />} />
             <Route path="jobs" element={<AllJobs />} />
             <Route path="candidates" element={<AllCandidates />} />
             <Route path="pipeline" element={<AdminPipeline />} />
+            <Route path="profile" element={<MyProfile />} />
           </Route>
 
           {/* Default redirects */}

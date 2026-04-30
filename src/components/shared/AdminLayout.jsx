@@ -1,12 +1,13 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { LayoutDashboard, UserCheck, Users, Briefcase, GitBranch, LogOut, Menu, X, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, UserCheck, Users, Briefcase, GitBranch, LogOut, Menu, X, ShieldCheck, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { api } from '../../api';
 
 const navItems = [
   { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/admin/approvals', icon: UserCheck, label: 'Pending Approvals', badge: true },
+  { to: '/admin/subadmins', icon: ShieldCheck, label: 'Subadmins', adminOnly: true },
   { to: '/admin/recruiters', icon: Users, label: 'Recruiters' },
   { to: '/admin/jobs', icon: Briefcase, label: 'All Jobs' },
   { to: '/admin/candidates', icon: Users, label: 'All Candidates' },
@@ -20,7 +21,13 @@ export default function AdminLayout() {
   const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
-    api.getPendingRecruiters().then(r => setPendingCount(r.length)).catch(() => {});
+    const fetchPending = () => {
+      api.getPendingRecruiters().then(r => setPendingCount(r.length)).catch(() => {});
+    };
+    fetchPending();
+
+    window.addEventListener('pendingCountUpdated', fetchPending);
+    return () => window.removeEventListener('pendingCountUpdated', fetchPending);
   }, []);
 
   const handleLogout = () => {
@@ -41,7 +48,7 @@ export default function AdminLayout() {
         </div>
 
         <nav className="flex-1 p-3 space-y-1">
-          {navItems.map(item => (
+          {navItems.filter(item => !item.adminOnly || user?.email === 'rehan@aitalenthunt.com').map(item => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -61,8 +68,12 @@ export default function AdminLayout() {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-navy-700">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-navy-200 hover:bg-navy-800 hover:text-white w-full transition-colors">
+        <div className="p-3 border-t border-navy-700 space-y-2">
+          <NavLink to="/admin/profile" className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-blue-600 text-white' : 'text-navy-200 hover:bg-navy-800 hover:text-white'}`}>
+            <User className="w-4 h-4" />
+            My Profile
+          </NavLink>
+          <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-navy-200 hover:bg-navy-800 hover:text-white w-full transition-colors bg-navy-800/50">
             <LogOut className="w-4 h-4" />
             Logout
           </button>

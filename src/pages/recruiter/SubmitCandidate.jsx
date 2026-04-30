@@ -15,8 +15,18 @@ export default function SubmitCandidate() {
   });
 
   useEffect(() => {
-    api.getJob(jobId).then(setJob).catch(() => toast.error('Job not found')).finally(() => setLoading(false));
-  }, [jobId]);
+    api.getJob(jobId).then(data => {
+      if (!data || !data.is_active) {
+        toast.error('This job is no longer active.');
+        navigate('/recruiter/jobs');
+      } else {
+        setJob(data);
+      }
+    }).catch(() => {
+      toast.error('Job not found');
+      navigate('/recruiter/jobs');
+    }).finally(() => setLoading(false));
+  }, [jobId, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

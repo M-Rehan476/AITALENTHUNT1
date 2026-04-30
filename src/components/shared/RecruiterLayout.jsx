@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { LayoutDashboard, Briefcase, Users, GitBranch, FilePlus, LogOut, Menu, X, CircleUser as UserCircle } from 'lucide-react';
+import { LayoutDashboard, Briefcase, Users, GitBranch, FilePlus, LogOut, Menu, X, CircleUser as UserCircle, User } from 'lucide-react';
 import { useState } from 'react';
 
 const navItems = [
@@ -54,8 +54,12 @@ export default function RecruiterLayout() {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-navy-700">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-navy-200 hover:bg-navy-800 hover:text-white w-full transition-colors">
+        <div className="p-3 border-t border-navy-700 space-y-2">
+          <NavLink to="/recruiter/profile" className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-blue-600 text-white' : 'text-navy-200 hover:bg-navy-800 hover:text-white'}`}>
+            <User className="w-4 h-4" />
+            My Profile
+          </NavLink>
+          <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-navy-200 hover:bg-navy-800 hover:text-white w-full transition-colors bg-navy-800/50">
             <LogOut className="w-4 h-4" />
             Logout
           </button>

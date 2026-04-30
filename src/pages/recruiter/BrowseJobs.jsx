@@ -13,7 +13,7 @@ export default function BrowseJobs() {
   const [locationFilter, setLocationFilter] = useState('');
 
   useEffect(() => {
-    api.getJobs().then(setJobs).catch(() => {}).finally(() => setLoading(false));
+    api.getJobs().then(data => setJobs(data.filter(j => j.is_active))).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   const filtered = jobs.filter(j => {

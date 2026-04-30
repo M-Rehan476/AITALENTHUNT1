@@ -8,6 +8,7 @@ export default function AllJobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [jobToDelete, setJobToDelete] = useState(null);
 
   const load = () => {
     api.getJobs().then(async (activeJobs) => {
@@ -32,6 +33,19 @@ export default function AllJobs() {
       toast.success('Job status updated');
       load();
     } catch (err) { toast.error(err.message); }
+  };
+
+  const confirmSoftDelete = async () => {
+    if (!jobToDelete) return;
+    try {
+      await api.deleteJob(jobToDelete);
+      toast.success('Job removed successfully');
+      load();
+      if (selected && selected.id === jobToDelete) setSelected(null);
+    } catch (err) { 
+      toast.error(err.message); 
+    }
+    setJobToDelete(null);
   };
 
   if (loading) return <Spinner />;
@@ -66,9 +80,16 @@ export default function AllJobs() {
                     <td className="px-5 py-3" onClick={e => e.stopPropagation()}>
                       <button
                         onClick={() => toggleActive(j.id, !!j.is_active)}
-                        className={`px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors ${j.is_active ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                        className={`px-2.5 py-0.5 rounded-full text-xs font-semibold mr-2 transition-colors inline-flex mb-1 md:mb-0 ${j.is_active ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
                       >
                         {j.is_active ? 'Active' : 'Inactive'}
+                      </button>
+                      <button 
+                        onClick={() => setJobToDelete(j.id)}
+                        className="px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors bg-red-100 text-red-700 hover:bg-red-200 inline-flex"
+                        title="Delete from portal (keeps data)"
+                      >
+                        Delete
                       </button>
                     </td>
                     <td className="px-5 py-3 text-slate-500">{j.candidate_count || 0}</td>
